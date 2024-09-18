@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import './App.css'
 import FilmList from './components/FilmList';
 import Category from './components/Category';
+import FilmDetail from './components/FilmDetail';
 
 function App() {
   const [data, setData] = useState([]);
@@ -30,9 +32,18 @@ function App() {
 
   return (
     <>
-      <h1>DVD RENTAL</h1>
-      <Category changeCategory={changeCategory}/>
-      <FilmList films={data}/>
+      <Router>
+        <h1>DVD RENTAL</h1>
+        <Routes>
+          <Route exact path="/" element={(
+            <>
+              <Category changeCategory={changeCategory}/>
+              <FilmList films={data} />
+            </>
+            )}/>
+          <Route path="/films/:id" element={<FilmDetail />} />
+        </Routes>
+      </Router>
     </>
   )
 }

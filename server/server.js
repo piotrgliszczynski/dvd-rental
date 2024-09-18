@@ -56,7 +56,8 @@ app.get('/films/:id', async (req, res) => {
         const { id } = req.params;
         let filmDetails = {}
         const filmResponse = await pool.query(
-            `SELECT * FROM film
+            `SELECT f.*, l.name as language
+            FROM film f JOIN language l using(language_id)
             WHERE film_id = ${id}`
         )
 

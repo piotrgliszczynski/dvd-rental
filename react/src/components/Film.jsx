@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 
 const Film = (props) => {
+    const navigate = useNavigate();
 
     const filmRow = () => {
         const keys = Object.keys(props.film);
@@ -11,11 +13,15 @@ const Film = (props) => {
         })
     }
 
+    const onButtonClick = () => {
+        navigate(`films/${props.film.film_id}`)
+    }
+
     return (
         <tr>
             {filmRow()}
             <td key='button'>
-                <button>See more...</button>
+                <button onClick={onButtonClick}>See more...</button>
             </td>
         </tr>
     )
