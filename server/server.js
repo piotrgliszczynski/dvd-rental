@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import pg from 'pg';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const pool = new Pool({
 });
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get('/films', async (req, res) => {
