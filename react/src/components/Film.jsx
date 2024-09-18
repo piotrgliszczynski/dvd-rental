@@ -14,6 +14,9 @@ const Film = (props) => {
     return (
         <tr>
             {filmRow()}
+            <td key='button'>
+                <button>See more...</button>
+            </td>
         </tr>
     )
 }

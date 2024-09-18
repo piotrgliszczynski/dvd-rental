@@ -22,6 +22,7 @@ const FilmList = (props) => {
                 <thead>
                     <tr>
                         {tableHeader()}
+                        <th key='moreDetails' style={{padding:'10px', textTransform:'uppercase'}}>More Details</th>
                     </tr>
                 </thead>
                 <tbody>

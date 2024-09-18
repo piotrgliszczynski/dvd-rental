@@ -22,11 +22,9 @@ app.get('/films', async (req, res) => {
     try {
         const result = await pool.query(
             `SELECT 
-                f.film_id, f.title, f.description, 
-                f.release_year, l.name as language, 
-                f.rental_duration, f.rental_rate, f.length 
-            FROM film f JOIN language l using(language_id)
-            LIMIT 10`, []
+                f.film_id, f.title, f.release_year, 
+                f.rental_duration, f.rental_rate 
+            FROM film f LIMIT 10`, []
         );
         if (result.rows.length > 0) {
             res.status(200).json(result.rows);
