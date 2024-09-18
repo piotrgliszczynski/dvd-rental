@@ -20,11 +20,41 @@ app.use(express.json());
 
 app.get('/films', async (req, res) => {
     try {
+        const category = req.query.category;
+        let queryString = "";
+        if (!category || category.toLowerCase() === 'all') {
+            queryString = `
+                SELECT 
+                    f.film_id, f.title, f.release_year, 
+                    f.rental_duration, f.rental_rate 
+                FROM film f LIMIT 10`;
+        } else {
+            queryString = `
+                SELECT
+                    f.film_id, f.title, f.release_year,
+                    f.rental_duration, f.rental_rate
+                FROM film f 
+                    JOIN film_category fc using(film_id) 
+                    JOIN category c using(category_id)
+                WHERE c.name = '${category}' LIMIT 10`
+        }
+        const result = await pool.query(queryString);
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).json('Films not found in the database!');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'Internal server error'});
+    }
+});
+
+app.get('/categories', async (req, res) => {
+    try {
         const result = await pool.query(
-            `SELECT 
-                f.film_id, f.title, f.release_year, 
-                f.rental_duration, f.rental_rate 
-            FROM film f LIMIT 10`, []
+            `SELECT name
+            FROM category`, []
         );
         if (result.rows.length > 0) {
             res.status(200).json(result.rows);
