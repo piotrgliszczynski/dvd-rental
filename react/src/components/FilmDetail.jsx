@@ -9,7 +9,6 @@ const FilmDetail = () => {
 
         console.log(filmDetails);
         if (!filmDetails || !filmDetails.actors) {
-            console.log('Test - null or undefined');
             return (<div>Loading data...</div>);
         }
 
@@ -30,10 +29,11 @@ const FilmDetail = () => {
                     ACTORS:
                 </div>
                 <div style={{marginLeft: '10px'}}>
-                    {filmDetails.actors.map(actor => (
-                                <div>{actor.first_name} {actor.last_name}</div>
+                    {filmDetails.actors.map((actor, index) => (
+                                <div key={index}>{actor.first_name} {actor.last_name}</div>
                     ))}
                 </div>
+                <button style={{margin: '15px'}}>Rent now!</button>
             </div>
         )
     }
