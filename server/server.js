@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.get('/films', async (req, res) => {
     try {
-        const category = req.query.category;
+        const { category } = req.query;
         let queryString = "";
         if (!category || category.toLowerCase() === 'all') {
             queryString = `
@@ -38,11 +38,40 @@ app.get('/films', async (req, res) => {
                     JOIN category c using(category_id)
                 WHERE c.name = '${category}' LIMIT 10`
         }
+
         const result = await pool.query(queryString);
         if (result.rows.length > 0) {
             res.status(200).json(result.rows);
         } else {
-            res.status(404).json('Films not found in the database!');
+            res.status(404).json({message: 'Films not found in the database!'});
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'Internal server error'});
+    }
+});
+
+app.get('/films/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        let filmDetails = {}
+        const filmResponse = await pool.query(
+            `SELECT * FROM film
+            WHERE film_id = ${id}`
+        )
+
+        if (filmResponse.rows.length == 1) {
+            filmDetails = filmResponse.rows[0];
+            const actorsResponse = await pool.query(
+                `SELECT a.first_name, a.last_name
+                FROM actor a JOIN film_actor fa using(actor_id)
+                WHERE fa.film_id = ${id}`
+            );
+    
+            filmDetails.actors = actorsResponse.rows;
+            res.status(200).json(filmDetails);
+        } else {
+            res.status(404).json({message: 'Film not found or more than one film found'});
         }
     } catch (err) {
         console.error(err);
