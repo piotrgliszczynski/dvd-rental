@@ -8,15 +8,22 @@ import FilmDetail from './components/FilmDetail';
 function App() {
   const [data, setData] = useState([]);
   const [category, setCategory] = useState('All');
+  const [page, setPage] = useState(1);
 
   const changeCategory = async (cat) => {
     setCategory(cat);
-    fetchData(cat);
+    setPage(1);
+    fetchData(cat, 1);
   }
 
-  const fetchData = async (cat) => {
+  const changePage = async (newPage) => {
+    setPage(newPage);
+    fetchData(category, newPage);
+  }
+
+  const fetchData = async (cat, page) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_FILM_API_URL}/films?category=${cat}`);
+      const response = await fetch(`${import.meta.env.VITE_FILM_API_URL}/films?category=${cat}&page=${page}`);
       if (!response.ok) {
         throw new Error('Data could not be fetched!');
       }
@@ -28,7 +35,7 @@ function App() {
     }
   }
 
-  useEffect(() => {fetchData(category)}, []);
+  useEffect(() => { fetchData(category, page) }, []);
 
   return (
     <>
@@ -37,10 +44,10 @@ function App() {
         <Routes>
           <Route exact path="/" element={(
             <>
-              <Category changeCategory={changeCategory}/>
-              <FilmList films={data} />
+              <Category changeCategory={changeCategory} />
+              <FilmList films={data} page={page} changePage={changePage} />
             </>
-            )}/>
+          )} />
           <Route path="/films/:id" element={<FilmDetail />} />
         </Routes>
       </Router>
